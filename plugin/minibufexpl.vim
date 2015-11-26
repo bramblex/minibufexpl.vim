@@ -1373,6 +1373,11 @@ function! <SID>DeleteBuffer(action,bang,...)
     let l:bufName = bufname(l:bufNum)
     call <SID>DEBUG('Buffer to be deleted is <'.l:bufName.'>['.l:bufNum.']',5)
 
+    " Make sure the file in buffer has been saved
+    if &confirm
+      exec 'edit ' . l:bufName
+    endif
+
     " Don't want auto updates while we are processing a delete
     " request.
     let l:saveAutoUpdate = t:miniBufExplAutoUpdate
@@ -1412,6 +1417,7 @@ function! <SID>DeleteBuffer(action,bang,...)
     endif
 
     let l:cmd = 'silent! '.l:cmd.' '.l:bufNum
+
     call <SID>DEBUG('About to execute the command "'.l:cmd.'"',5)
 
     exec l:cmd
@@ -2260,6 +2266,7 @@ function! <SID>MBEDeleteBuffer()
   let l:selBuf = <SID>GetSelectedBuffer()
 
   if l:selBuf != -1
+    " Make sure the file has been saved
     call <SID>DeleteBuffer(0,0,l:selBuf)
   endif
 
